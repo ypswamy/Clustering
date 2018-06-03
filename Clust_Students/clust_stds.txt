@@ -1,0 +1,38 @@
+library(datasets)
+library(ggplot2)
+library(cluster)
+library(ggplot2) # Data visualization
+library(readr) # CSV file I/O, e.g. the read_csv function
+
+data <- read.csv("C:/Users/Pandu/Desktop/Pandu_ course/CASE_STUDY/Kaggle/Clust_Students/big_student_clear_third_version.csv")
+
+data
+names(data)
+nrow(data)
+dim(data)
+summary(data)
+str(data)
+
+set.seed(50)
+instituteCluster <- kmeans(data[, c("viewed","explored","certified","nevents","ndays_act","nchapters")],5, nstart = 50)
+
+instituteCluster
+instituteCluster$size
+
+instituteCluster$cluster <- as.factor(instituteCluster$cluster)
+
+table(instituteCluster$cluster,data$course_id)
+table(instituteCluster$cluster,data$institute)
+table(instituteCluster$cluster,data$certified)
+
+plot(data[,c( "explored","certified")],col=instituteCluster$cluster)
+
+dat <- data[,c( "explored","certified")]
+
+library(cluster)
+library(fpc)
+dat <- data[,c("viewed", "explored","certified","nevents", "ndays_act","nchapters")]
+plotcluster(dat, instituteCluster$cluster,main="K-Means result with 6 clusters")
+
+
+
