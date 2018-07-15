@@ -1,0 +1,67 @@
+setwd("C:/Users/Pandu/Desktop/Pandu_ course/CASE_STUDY/Hack")
+mydata <- read.csv("Customer_Details2.csv")
+mydata1 <- mydata
+
+summary(mydata)
+dim(mydata)
+colnames(mydata)
+str(mydata)
+head(mydata,5)
+
+#Identify rows with NA values
+mydata[!complete.cases(mydata)]
+#Identify rows with NA values
+mydata[,!complete.cases(mydata)]
+mydata <- na.omit(mydata,na.action=TRUE)
+
+
+mydata <- mydata[,c(3,6,7,9,10)]
+names(mydata)
+
+boxplot(mydata)
+
+boxplot(mydata[,c(2)])
+plot(mydata[,c(2)])
+boxplot(mydata[,c(3)])
+plot(mydata[,c(3)])
+boxplot(mydata[,c(5)])
+plot(mydata[,c(5)])
+
+library(data.table)
+ outlierReplace = function(dataframe, cols, rows, newValue = NA) 
+ {
+	if (any(rows)) 
+	{
+		set(dataframe, rows, cols, newValue)
+	}
+ }
+
+summary(mydata$UNEMPRATE)
+outlierReplace(mydata, "UNEMPRATE", which(mydata$UNEMPRATE > 1.5), 1.5)
+summary(mydata$UNEMPRATE)
+
+
+mydata <- scale(mydata[,1:5])
+wss <- (nrow(mydata)-1)*sum(apply(mydata,2,var))
+
+wss
+for(i in 2:15)wss[i]<- sum(fit=kmeans(mydata,centers=i,15)$withinss)
+plot(1:15,wss,type="b",main="15 clusters",xlab="no. of cluster",ylab="with clsuter sum of squares")
+fit <- kmeans(mydata,3)
+fit
+
+fit$withinss
+fit$betweenss
+fit$size 
+plot(mydata,col=fit$cluster,pch=15)
+points(fit$centers,col=1:8,pch=3)
+library(cluster)
+library(fpc)
+plotcluster(mydata,fit$cluster)
+points(fit$centers,col=1:8,pch=16)
+clusplot(mydata, fit$cluster, color=TRUE, shade=TRUE, labels=2, lines=0)
+
+mydata <- mydata1[,c(3,6,7,9,10)]
+ mydata <- data.frame(mydata,fit$cluster)
+ cluster_mean <- aggregate(mydata[,1:6],by = list(fit$cluster),FUN = mean)
+ cluster_mean
